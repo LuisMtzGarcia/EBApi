@@ -22,6 +22,17 @@ def make_request(url):
         response = response.json()
         return response
 
+def send_request(data):
+    """Sends a contact request."""
+
+    url = "https://api.stagingeb.com/v1/contact_requests"
+    payload = {'data': data}
+    headers = {
+        'X-Authorization': 'l7u502p8v46ba3ppgvj5y2aad50lb9'
+    }
+    res = requests.post(url, data=payload, headers=headers)
+
+
 #########
 # VIEWS #
 #########
@@ -99,7 +110,7 @@ def contact_request(request, id):
         form = ContactRequestForm(data=request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            print(JsonResponse(data).content)
+            send_request(JsonResponse(data))
             return redirect('EBApi:property', id=id)
 
     return form
