@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EB Test</title>
+</head>
+<body>
+    <h1>Propiedades</h1>
+
+    <div class="navigation" style="display: flex; justify-content: center; gap: 2em;">
+        {% if previous_page %}
+        <form action="{% url 'EBApi:properties' page=previous_page %}">
+            <input type="submit" value="<" />
+        </form>
+        {% endif %}
+        {% if next_page %}
+        <form action="{% url 'EBApi:properties' page=next_page %}">
+            <input type="submit" value=">" />
+        </form>
+        {% endif %}
+    </div>
+
+    <br>
+
+    <div class="container">
+        <div class="properties"  style="display: flex; flex-wrap: wrap; flex: 1; gap: 2em; align-items: top; justify-content: center;">
+            {% for property in properties %}
+            <div class="property" style="border: solid; border-color: black; padding: 1em;">
+                <p>Public ID: {{ property.public_id }}</p>
+                <p>Title: {{ property.title }}</p>
+                <p>Property type: {% for operation in property.operations %}{{ operation.type }}{% endfor %}</p>
+                <p>Location: {{ property.location }}</p>
+                <img src="{{ property.title_image_thumb }}" alt="{{ property.public_id }}-image" style="display: block; margin-left: auto; margin-right: auto;">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

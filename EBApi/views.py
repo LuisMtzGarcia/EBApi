@@ -1,32 +1,54 @@
-from EBApi.serializers import PropertySerializer
-from django.http import Http404
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from django.shortcuts import render
 
 import requests
 
-class PropertyList(APIView):
-    """List a page of properties."""
+#############
+# FUNCTIONS #
+#############
+
+def make_request(url):
+    """Generates a response."""
 
     headers = {
         'X-Authorization': 'l7u502p8v46ba3ppgvj5y2aad50lb9'
     }
 
-    base_url = 'https://api.stagingeb.com/v1/properties?page=1&limit=15'
+    response = requests.get(url, headers=headers)
 
-    def __init__(self):
-        self.response = self.make_request(self.base_url)
-    
-    def make_request(self, base_url):
-        """Genera el response inicial."""
+    if response.status_code == 200:
+        response = response.json()
+        return response
 
-        response = requests.get(base_url, headers=self.headers)
+#########
+# VIEWS #
+#########
 
-        if response.status_code == 200:
-            return response.json()
+def properties(request, page=1):
+    """Lists a page of properties."""
 
-    def get(self, request):
-        data = self.response['content']
-        results = PropertySerializer(data, many=True).data
-        return Response(results)
+    url = f'https://api.stagingeb.com/v1/properties?page={page}&limit=15&search%5Bstatuses%5D%5B%5D=published'
+
+    response = make_request(url)
+
+    # Obtains the number of the following page.
+    # Reads the url from the response and splits it to obtain the number of the 
+    # page.
+    # If there isn't a next page, it returns None.
+    next_page = response['pagination']['next_page']
+    if next_page:
+        next_page = next_page.split('&')
+        next_page = next_page[1].split('=')
+        next_page = next_page[1]
+
+    # Obtains the previous page number.
+    previous_page = page - 1
+    if previous_page == 0:
+        previous_page = None
+
+    context = {
+        'properties': response['content'], 
+        'next_page': next_page,
+        'previous_page': previous_page,
+    }
+
+    return render(request, 'EBApi/properties.html', context)
