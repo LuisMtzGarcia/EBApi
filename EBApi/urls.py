@@ -10,4 +10,5 @@ urlpatterns = [
     # path('', views.index, name='index'),
     path('properties/<int:page>', views.properties, name="properties"),
     path('properties/', views.properties, name="properties"),
+    path('property/<str:id>', views.property_detail, name="property"),
 ]

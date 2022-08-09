@@ -52,3 +52,32 @@ def properties(request, page=1):
     }
 
     return render(request, 'EBApi/properties.html', context)
+
+def property_detail(request, id):
+    """Displays a property information."""
+
+    url = f"https://api.stagingeb.com/v1/properties/{id}"
+
+    response = make_request(url)
+
+    # contact form to create new leads
+
+    public_id = response["public_id"]
+    title = response["title"]
+    description = response["description"]
+    image_url = response["property_images"][0]["url"]
+    image_title = response["property_images"][0]["title"]
+    property_type = response["property_type"]
+    location = response["location"]["name"]
+
+    context = {
+        'public_id': public_id,
+        'title': title,
+        'description': description,
+        'image_url': image_url,
+        'image_title': image_title,
+        'property_type': property_type,
+        'location': location,
+    }
+
+    return render(request, 'EBApi/property.html', context)

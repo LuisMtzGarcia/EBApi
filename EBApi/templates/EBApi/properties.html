@@ -28,7 +28,12 @@
         <div class="properties"  style="display: flex; flex-wrap: wrap; flex: 1; gap: 2em; align-items: top; justify-content: center;">
             {% for property in properties %}
             <div class="property" style="border: solid; border-color: black; padding: 1em;">
-                <p>Public ID: {{ property.public_id }}</p>
+                <p>
+                    Public ID: 
+                    <a href="{% url 'EBApi:property' id=property.public_id %}">
+                        {{ property.public_id }}
+                    </a>
+                </p>
                 <p>Title: {{ property.title }}</p>
                 <p>Property type: {% for operation in property.operations %}{{ operation.type }}{% endfor %}</p>
                 <p>Location: {{ property.location }}</p>
