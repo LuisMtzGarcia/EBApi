@@ -1,4 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponseRedirect
+
+from .forms import ContactRequestForm
 
 import requests
 
@@ -60,8 +63,7 @@ def property_detail(request, id):
 
     response = make_request(url)
 
-    # contact form to create new leads
-
+    # Information fields
     public_id = response["public_id"]
     title = response["title"]
     description = response["description"]
@@ -69,6 +71,7 @@ def property_detail(request, id):
     image_title = response["property_images"][0]["title"]
     property_type = response["property_type"]
     location = response["location"]["name"]
+    form = contact_request(request, public_id)
 
     context = {
         'public_id': public_id,
@@ -78,6 +81,25 @@ def property_detail(request, id):
         'image_title': image_title,
         'property_type': property_type,
         'location': location,
+        'form': form,
     }
 
     return render(request, 'EBApi/property.html', context)
+
+#########
+# FORMS #
+#########
+
+def contact_request(request, id):
+    """Send a client's contact request."""
+
+    if request.method != 'POST':
+        form = ContactRequestForm(initial={'public_id': id})
+    else:
+        form = ContactRequestForm(data=request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            print(JsonResponse(data).content)
+            return redirect('EBApi:property', id=id)
+
+    return form
