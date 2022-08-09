@@ -33,7 +33,6 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # Apps
     'EBApi',
-    'rest_framework',
 
     # Default Django apps
     'django.contrib.admin',
