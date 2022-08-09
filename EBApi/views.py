@@ -78,8 +78,14 @@ def property_detail(request, id):
     public_id = response["public_id"]
     title = response["title"]
     description = response["description"]
-    image_url = response["property_images"][0]["url"]
-    image_title = response["property_images"][0]["title"]
+    
+    if len(response['property_images']):
+        image_url = response["property_images"][0]["url"]
+        image_title = response["property_images"][0]["title"]
+    else:
+        image_url = '/'
+        image_title = response["public_id"]
+
     property_type = response["property_type"]
     location = response["location"]["name"]
     form = contact_request(request, public_id)

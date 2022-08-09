@@ -7,6 +7,9 @@
     <title>EB Test</title>
 </head>
 <body>
+    <form action="{% url 'EBApi:properties' %}">
+        <input type="submit" value="Regresar a propiedades" />
+    </form>
     <h1>{{ title }}</h1>
     <h3>{{ public_id }}</h3>
     <p>{{ property_type }}</p>
